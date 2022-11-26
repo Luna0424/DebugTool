@@ -1,5 +1,9 @@
 using System;
 using System.Windows.Forms;
+using System.Security;
+using System.Security.Permissions;
+using System.Reflection;
+using System.Diagnostics;
 
 namespace myform
 {
@@ -9,11 +13,13 @@ namespace myform
         {
             bool SfcC = false;
             bool DismC = false;
+            //Icon icon = Icon.ExtractAssociatedIcon("icon.ico");
 
             Form myform = new Form()
             {
                 Height = 500,
-                Width = 400 
+                Width = 400,
+                //Icon = icon
             };
 
             Button SFC = new Button()
@@ -65,13 +71,13 @@ namespace myform
             btn.Click += (o ,s) =>
             {
                 if(SfcC == true){
-                var process = System.Diagnostics.Process.Start("CMD.exe", "/C sfc /scannow");
+                var process = System.Diagnostics.Process.Start("CMD.exe", "/C sfc /scannow >> log.txt");
                 process.WaitForExit();
                 Console.WriteLine("System File Checker - Done");
                 SfcC = false;
                 }
                 if(DismC == true){
-                var process = System.Diagnostics.Process.Start("CMD.exe", "/C DISM /Online /Cleanup-Image /RestoreHealth");
+                var process = System.Diagnostics.Process.Start("CMD.exe", "/C DISM /Online /Cleanup-Image /RestoreHealth >> log.txt");
                 process.WaitForExit();
                 Console.WriteLine("Deployment Image Servicing and Management Fix - Done");
                 DismC = false;
