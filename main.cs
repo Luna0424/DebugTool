@@ -11,6 +11,7 @@ namespace myform
             bool DismC = false;
 
             Form myform = new Form();
+
             Button SFC = new Button()
             {
                 Height = 100,
@@ -45,11 +46,23 @@ namespace myform
                     DismC = false;
                     DISM.Text = "DISM";
                 }
+                /*var process = System.Diagnostics.Process.Start("CMD.exe", "/C sfc /scannow");
+                process.WaitForExit();
+                Console.WriteLine("System File Checker - Done");*/
+            };
 
+            Button btn = new Button()
+            {
+                Height = 100,
+                Width = 100,
+                Text = "RUN",
+                Location = new System.Drawing.Point(0, 0)
+            };
+            btn.Click += (o ,s) =>
+            {
+                if(SfcC == true){
 
-
-
-
+                }
                 /*var process = System.Diagnostics.Process.Start("CMD.exe", "/C sfc /scannow");
                 process.WaitForExit();
                 Console.WriteLine("System File Checker - Done");*/
@@ -58,6 +71,7 @@ namespace myform
 
             myform.Controls.Add(SFC);
             myform.Controls.Add(DISM);
+            myform.Controls.Add(btn);
             myform.ShowDialog();
 
             while (myform.Created)
