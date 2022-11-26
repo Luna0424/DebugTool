@@ -10,7 +10,11 @@ namespace myform
             bool SfcC = false;
             bool DismC = false;
 
-            Form myform = new Form();
+            Form myform = new Form()
+            {
+                Height = 500,
+                Width = 400 
+            };
 
             Button SFC = new Button()
             {
@@ -64,11 +68,13 @@ namespace myform
                 var process = System.Diagnostics.Process.Start("CMD.exe", "/C sfc /scannow");
                 process.WaitForExit();
                 Console.WriteLine("System File Checker - Done");
+                SfcC = false;
                 }
                 if(DismC == true){
                 var process = System.Diagnostics.Process.Start("CMD.exe", "/C DISM /Online /Cleanup-Image /RestoreHealth");
                 process.WaitForExit();
                 Console.WriteLine("Deployment Image Servicing and Management Fix - Done");
+                DismC = false;
                 }
                 
             };
