@@ -53,19 +53,24 @@ namespace myform
 
             Button btn = new Button()
             {
-                Height = 100,
+                Height = 50,
                 Width = 100,
                 Text = "RUN",
-                Location = new System.Drawing.Point(0, 0)
+                Location = new System.Drawing.Point(10, 200)
             };
             btn.Click += (o ,s) =>
             {
                 if(SfcC == true){
-
-                }
-                /*var process = System.Diagnostics.Process.Start("CMD.exe", "/C sfc /scannow");
+                var process = System.Diagnostics.Process.Start("CMD.exe", "/C sfc /scannow");
                 process.WaitForExit();
-                Console.WriteLine("System File Checker - Done");*/
+                Console.WriteLine("System File Checker - Done");
+                }
+                if(DismC == true){
+                var process = System.Diagnostics.Process.Start("CMD.exe", "/C DISM /Online /Cleanup-Image /RestoreHealth");
+                process.WaitForExit();
+                Console.WriteLine("Deployment Image Servicing and Management Fix - Done");
+                }
+                
             };
 
 
