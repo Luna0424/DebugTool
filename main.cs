@@ -126,7 +126,7 @@ namespace myform
             Button update = new Button(){
                 Height = 25,
                 Width = 120,
-                Text = "Update",
+                Text = "Update /all",
                 Location = new Point(20, 230),
                 Visible = false
             };
@@ -139,6 +139,14 @@ namespace myform
                     update.Text = "Update /all";
                 }
             };
+            Button WinGet_Back = new Button(){
+                Height = 50,
+                Width = 100,
+                Text = "Confirm",
+                Location = new System.Drawing.Point(10, 300)
+            };
+            
+
 
 
 
@@ -182,7 +190,7 @@ namespace myform
                 Height = 50,
                 Width = 100,
                 Text = "RUN",
-                Location = new System.Drawing.Point(10, 200)
+                Location = new System.Drawing.Point(10, 300)
             };
             RUN.Click += (o ,s) =>{
                 //WinGet
@@ -259,6 +267,23 @@ namespace myform
                 steam.Visible = true;
                 discord.Visible = true;
                 update.Visible = true;
+                WinGet_Back.Visible = true;
+            };
+            WinGet_Back.Click += (o ,s) => {
+                SFC.Visible = true;
+                DISM.Visible = true;
+                WinGet.Visible = true;
+                RUN.Visible = true;
+
+                //WinGet Menu
+                WinGet_L.Visible = false;
+                chrome.Visible = false;
+                firefox.Visible = false;
+                opera.Visible = false;
+                steam.Visible = false;
+                discord.Visible = false;
+                update.Visible = false;
+                WinGet_Back.Visible = false;
             };
 
             
@@ -275,6 +300,7 @@ namespace myform
             myform.Controls.Add(steam);
             myform.Controls.Add(discord);
             myform.Controls.Add(update);
+            myform.Controls.Add(WinGet_Back);
 
             myform.Controls.Add(RUN);
             myform.ShowDialog();
