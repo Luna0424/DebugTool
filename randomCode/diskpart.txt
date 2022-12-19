@@ -1,0 +1,29 @@
+using System.Diagnostics;
+
+namespace ConsoleApplication1
+{
+  class Program
+  {
+    static void Main(string[] args)
+    {
+      Process p = new Process();                                    // new instance of Process class
+      p.StartInfo.UseShellExecute = false;                          // do not start a new shell
+      p.StartInfo.RedirectStandardOutput = true;                    // Redirects the on screen results
+      p.StartInfo.FileName = @"C:\Windows\System32\diskpart.exe";   // executable to run
+      p.StartInfo.RedirectStandardInput = true;                     // Redirects the input commands
+      p.Start();                                                    // Starts the process
+      p.StandardInput.WriteLine("select disk 2");                   // Issues commands to diskpart
+      p.StandardInput.WriteLine("clean");                           //   |
+      p.StandardInput.WriteLine("create partition primary");        //   |
+      p.StandardInput.WriteLine("select partition 1");              //   |
+      p.StandardInput.WriteLine("format fs=fat32 quick");           //   |
+      p.StandardInput.WriteLine("active");                          //   |
+      p.StandardInput.WriteLine("assign");                          //   |
+      p.StandardInput.WriteLine("exit");                            // _\|/_
+      string output = p.StandardOutput.ReadToEnd();                 // Places the output to a variable
+      p.WaitForExit();                                              // Waits for the exe to finish
+
+      Console.WriteLine(output);                                    // prints the output
+    }
+  }
+}

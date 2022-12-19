@@ -13,12 +13,19 @@ namespace myform
         {
             bool SfcC = false;
             bool DismC = false;
+            bool CopyC = false;
 
             Form myform = new Form()
             {
                 Height = 500,
                 Width = 400,
             };
+
+            var dir = Directory.GetCurrentDirectory();
+            FileInfo f = new FileInfo(dir);    
+            string drive = Path.GetPathRoot(f.FullName);
+            //Console.WriteLine(drive);
+            Console.WriteLine("Copy-Item -Path C:\\Users -Destination "+drive+@"C\ -Recurse");
 
 
             //WINGET
@@ -143,6 +150,7 @@ namespace myform
                 Height = 50,
                 Width = 100,
                 Text = "Confirm",
+                Visible = false,
                 Location = new System.Drawing.Point(10, 300)
             };
             
@@ -186,6 +194,24 @@ namespace myform
                 }
             };
 
+            Button Copy = new Button(){
+                Height = 100,
+                Width = 100,
+                Text = "Copy",
+                Location = new System.Drawing.Point(10, 120)
+            };
+            Copy.Click += (o, s) =>{
+                if(CopyC == false){
+                    CopyC = true;
+                    Copy.Text = "Copy ✓";
+                }else if(CopyC == true){
+                    CopyC = false;
+                    Copy.Text = "Copy";
+                }
+            };
+
+
+            //run button
             Button RUN = new Button(){
                 Height = 50,
                 Width = 100,
@@ -193,6 +219,8 @@ namespace myform
                 Location = new System.Drawing.Point(10, 300)
             };
             RUN.Click += (o ,s) =>{
+                //Reset Log
+                System.Diagnostics.Process.Start("CMD.exe", "/C clear > log.txt");
                 //WinGet
                 //Web Browsers
                 if(chrome_ins == true){
@@ -229,8 +257,6 @@ namespace myform
                     Console.WriteLine("Update - Done");
                 }
 
-
-
                 //Debuger
                 if(SfcC == true){
                 var process = System.Diagnostics.Process.Start("CMD.exe", "/C sfc /scannow >> log.txt");
@@ -244,7 +270,32 @@ namespace myform
                 Console.WriteLine("Deployment Image Servicing and Management Fix - Done");
                 DismC = false;
                 }
-                
+                if(CopyC == true){
+                    //var command = "";
+                    Process p = new Process();
+                    p.StartInfo.UseShellExecute = false;
+                    p.StartInfo.RedirectStandardOutput = true;
+                    p.StartInfo.FileName = @"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe";
+                    p.StartInfo.RedirectStandardInput = true;
+                    p.Start();
+                    if(!Directory.Exists(drive + @"C\")){
+                        p.StandardInput.WriteLine("mkdir " + drive + @"C\");
+                    }
+                    Console.WriteLine(@"Copy-Item -Path C:\Users -Exclude  -Destination "+drive+@"C\ -Recurse");
+                    p.StandardInput.WriteLine("Copy-Item -Path C:\\Users \"\" -Destination "+drive+@"C\ -Recurse");
+                    p.WaitForExit();
+
+
+                    /*var process = System.Diagnostics.Process.Start("CMD.exe", "/C" + command + " >> log.txt");
+                    process.
+                    process.WaitForExit();
+                    Console.WriteLine("Copy - Done");*/
+                    CopyC = false;
+                }
+
+
+
+                Console.WriteLine("DONE");
             };
 
             Button WinGet = new Button(){
@@ -256,6 +307,7 @@ namespace myform
             WinGet.Click += (o ,s) => {
                 SFC.Visible = false;
                 DISM.Visible = false;
+                Copy.Visible = false;
                 WinGet.Visible = false;
                 RUN.Visible = false;
 
@@ -272,6 +324,7 @@ namespace myform
             WinGet_Back.Click += (o ,s) => {
                 SFC.Visible = true;
                 DISM.Visible = true;
+                Copy.Visible = true;
                 WinGet.Visible = true;
                 RUN.Visible = true;
 
@@ -291,6 +344,7 @@ namespace myform
             myform.Controls.Add(SFC);
             myform.Controls.Add(DISM);
             myform.Controls.Add(WinGet);
+            myform.Controls.Add(Copy);
 
             //WinGet
             myform.Controls.Add(WinGet_L);
