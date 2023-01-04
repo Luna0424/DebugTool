@@ -25,7 +25,7 @@ namespace myform
             var dir = Directory.GetCurrentDirectory();
             FileInfo f = new FileInfo(dir);    
             string drive = Path.GetPathRoot(f.FullName);
-            var path = drive + @"C\Users";
+            //Console.WriteLine(drive);
 
 
             //WINGET
@@ -296,19 +296,13 @@ namespace myform
 
                     // Check if the source directory exists
                     if (!dir.Exists)
-                        //throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
-                        Console.WriteLine("ERrOR Directory does't exixts");
-                        Console.WriteLine("Press enter to exit...");
-                        Console.ReadLine();
+                        throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
 
                     // Cache directories before we start copying
                     DirectoryInfo[] dirs = dir.GetDirectories();
 
-                    // Create the destination directory if it not alredy exists
-                    if (!Directory.Exists(path)){
-                        Directory.CreateDirectory(path);
-                    }
-                    
+                    // Create the destination directory
+                    Directory.CreateDirectory(destinationDir);
 
                     // Get the files in the source directory and copy to the destination directory
                     foreach (FileInfo file in dir.GetFiles())
@@ -316,10 +310,15 @@ namespace myform
                         string targetFilePath = Path.Combine(destinationDir, file.Name);
                         file.CopyTo(targetFilePath);
                     }
-                    foreach (DirectoryInfo subDir in dirs)
+
+                    // If recursive and copying subdirectories, recursively call this method
+                    if (recursive)
                     {
-                        string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
-                        CopyDirectory(subDir.FullName, newDestinationDir, true);
+                        foreach (DirectoryInfo subDir in dirs)
+                        {
+                            string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
+                            CopyDirectory(subDir.FullName, newDestinationDir, true);
+                        }
                     }
 
 
