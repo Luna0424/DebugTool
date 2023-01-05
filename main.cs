@@ -12,6 +12,10 @@ namespace myform
     {
         static void Main(string[] args)
         {
+
+            Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
             bool SfcC = false;
             bool DismC = false;
             bool CopyC = false;
@@ -21,11 +25,6 @@ namespace myform
                 Height = 500,
                 Width = 400,
             };
-
-            var dir = Directory.GetCurrentDirectory();
-            FileInfo f = new FileInfo(dir);    
-            string drive = Path.GetPathRoot(f.FullName);
-            var path = drive + @"C\Users";
 
 
             //WINGET
@@ -197,16 +196,16 @@ namespace myform
             Button Copy = new Button(){
                 Height = 100,
                 Width = 100,
-                Text = "Copy",
+                Text = "Copy Userdata",
                 Location = new System.Drawing.Point(10, 120)
             };
             Copy.Click += (o, s) =>{
                 if(CopyC == false){
                     CopyC = true;
-                    Copy.Text = "Copy ✓";
+                    Copy.Text = "Copy Userdata ✓";
                 }else if(CopyC == true){
                     CopyC = false;
-                    Copy.Text = "Copy";
+                    Copy.Text = "Copy Userdata";
                 }
             };
 
@@ -271,57 +270,37 @@ namespace myform
                 DismC = false;
                 }
                 if(CopyC == true){
-                    //var command = "";
-                    /*Process p = new Process();
-                    p.StartInfo.UseShellExecute = false;
-                    p.StartInfo.RedirectStandardOutput = true;
-                    p.StartInfo.FileName = @"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe";
-                    p.StartInfo.RedirectStandardInput = true;
-                    p.Start();
-                    /*if(!Directory.Exists(drive + @"C\")){
-                        p.StandardInput.WriteLine("mkdir " + drive + @"C\");
-                    }*//*
-                    Console.WriteLine("Unlocking Scripts");
-                    p.StandardInput.WriteLine("Set-ExecutionPolicy RemoteSigned");
-                    Thread.Sleep(5000);
-                    p.StandardInput.WriteLine("A");
-                    p.WaitForExit();
-                    Console.WriteLine("Done");*/
 
+                    FileInfo fv = new FileInfo(Directory.GetCurrentDirectory());    
+                    string drive = Path.GetPathRoot(fv.FullName);
 
-
-
-                    // Get information about the source directory
-                    var dir = new DirectoryInfo(@"C:\users");
-
-                    // Check if the source directory exists
-                    if (!dir.Exists)
-                        //throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
-                        Console.WriteLine("ERrOR Directory does't exixts");
-                        Console.WriteLine("Press enter to exit...");
-                        Console.ReadLine();
-
-                    // Cache directories before we start copying
-                    DirectoryInfo[] dirs = dir.GetDirectories();
-
-                    // Create the destination directory if it not alredy exists
-                    if (!Directory.Exists(path)){
-                        Directory.CreateDirectory(path);
-                    }
                     
 
-                    // Get the files in the source directory and copy to the destination directory
-                    foreach (FileInfo file in dir.GetFiles())
-                    {
-                        string targetFilePath = Path.Combine(destinationDir, file.Name);
-                        file.CopyTo(targetFilePath);
-                    }
-                    foreach (DirectoryInfo subDir in dirs)
-                    {
-                        string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
-                        CopyDirectory(subDir.FullName, newDestinationDir, true);
-                    }
+                    string userpath = System.Environment.GetEnvironmentVariable("USERPROFILE");
+                    string sourceDir = userpath;
+                    string destinationDir = drive + @"Users";
+                    bool recursive = true;
+                    Console.WriteLine("src = " + sourceDir);
+                    Console.WriteLine("des = " + destinationDir);
+                    Console.WriteLine("Recursive = " + recursive);
 
+
+
+                    /*// Get the directory information using directoryInfo() method
+                    DirectoryInfo folder = new DirectoryInfo(sourceDir);
+      
+                    // Calling a folderSize() method
+                    long totalFolderSize = folderSize(folder);
+      
+                    Console.WriteLine("Total folder size in bytes: " + totalFolderSize);*/
+
+
+                    /*FileStream s2 = new FileStream("test.txt", FileMode.Open, FileAccess.Write);
+                    Console.WriteLine(s2);*/
+
+
+
+                    CopyDirectory(sourceDir, destinationDir, recursive);
 
 
                     CopyC = false;
@@ -397,6 +376,101 @@ namespace myform
             {
 
             }
+        }
+
+        static void CopyDirectory(string sourceDir, string destinationDir, bool recursive){
+            // Get information about the source directory
+            var dir = new DirectoryInfo(sourceDir);
+
+            // Check if the source directory exists
+            if (!dir.Exists)
+                throw new DirectoryNotFoundException("Source directory not found: {" + dir.FullName +"}");
+
+            // Cache directories before we start copying
+            DirectoryInfo[] dirs = dir.GetDirectories();
+
+            // Create the destination directory
+            Directory.CreateDirectory(destinationDir);
+
+            // Get the files in the source directory and copy to the destination directory
+            foreach (FileInfo file in dir.GetFiles())
+            {
+                //if(file.Name == "Content.IE5"){continue;}
+                    
+                try{
+                    
+                    string targetFilePath = Path.Combine(destinationDir, file.Name);
+                    file.CopyTo(targetFilePath);
+                    Console.WriteLine(file.FullName + "---"  + file.Length + "b");
+                }
+                catch (UnauthorizedAccessException) { 
+                    Console.WriteLine("ERrOR! FILE ACCESS DENIED, SKIPPING FILE {" + Path.Combine(destinationDir, file.Name) + "}");
+                    continue;
+                }
+                catch(IOException){
+                    Console.WriteLine("ERrOR! FILE IN USE, SKIPPING FILE {" + Path.Combine(destinationDir, file.Name) + "}");
+                    continue;
+                }
+                
+            }
+
+            // If recursive and copying subdirectories, recursively call this method
+            if (recursive == true)
+            {
+                foreach (DirectoryInfo subDir in dirs)
+                {
+                    string userpath = System.Environment.GetEnvironmentVariable("USERPROFILE");
+                    string Exception_Spec = subDir.FullName;
+                    if(Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\INetCache" || Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\History" || Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\Temporary Internet Files"){
+                        continue;
+                    }
+                    string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
+                    CopyDirectory(subDir.FullName, newDestinationDir, true);
+                }
+            }
+        }
+
+        static long folderSize(DirectoryInfo folder)
+        {
+            long totalSizeOfDir = 0;
+      
+            // Get all files into the directory
+            FileInfo[] allFiles = folder.GetFiles();
+      
+            // Loop through every file and get size of it
+            foreach (FileInfo file in allFiles)
+            {
+                try{
+                    totalSizeOfDir += file.Length;
+                }
+                catch(IOException){
+                    continue;
+                }
+            }
+      
+            // Find all subdirectories
+            DirectoryInfo[] subFolders = folder.GetDirectories();
+      
+            // Loop through every subdirectory and get size of each
+            foreach (DirectoryInfo dir in subFolders)
+            {
+                totalSizeOfDir += folderSize(dir);
+            }
+      
+            // Return the total size of folder
+            return totalSizeOfDir;
+        }
+        static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            // Log the exception, display it, etc
+            Console.WriteLine(e.Exception.Message);
+            continue;
+        }
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            // Log the exception, display it, etc
+            Console.WriteLine((e.ExceptionObject as Exception).Message);
+            continue;
         }
     }
 }
