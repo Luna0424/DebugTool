@@ -19,6 +19,7 @@ namespace myform
             bool SfcC = false;
             bool DismC = false;
             bool CopyC = false;
+            bool PasteC = false;
 
             Form myform = new Form()
             {
@@ -208,6 +209,21 @@ namespace myform
                     Copy.Text = "Copy Userdata";
                 }
             };
+            Button Paste = new Button(){
+                Height = 100,
+                Width = 100,
+                Text = "Paste Userdata",
+                Location = new System.Drawing.Point(120, 120)
+            };
+            Paste.Click += (o, s) =>{
+                if(PasteC == false){
+                    PasteC = true;
+                    Paste.Text = "Paste Userdata ✓";
+                }else if(PasteC == true){
+                    PasteC = false;
+                    Paste.Text = "Paste Userdata";
+                }
+            };
 
 
             //run button
@@ -358,6 +374,7 @@ namespace myform
             myform.Controls.Add(DISM);
             myform.Controls.Add(WinGet);
             myform.Controls.Add(Copy);
+            myform.Controls.Add(Paste);
 
             //WinGet
             myform.Controls.Add(WinGet_L);
@@ -408,7 +425,7 @@ namespace myform
                     continue;
                 }
                 catch(IOException){
-                    Console.WriteLine("ERrOR! FILE IN USE, SKIPPING FILE {" + Path.Combine(destinationDir, file.Name) + "}");
+                    Console.WriteLine("ERrOR! FILE IN USE OR ALREADY COPIED, SKIPPING FILE {" + Path.Combine(destinationDir, file.Name) + "}");
                     continue;
                 }
                 
@@ -421,7 +438,7 @@ namespace myform
                 {
                     string userpath = System.Environment.GetEnvironmentVariable("USERPROFILE");
                     string Exception_Spec = subDir.FullName;
-                    if(Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\INetCache" || Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\History" || Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\Temporary Internet Files" || Exception_Spec == userpath + @"\AppData\Local\Programdata" || Exception_Spec == userpath + @"\AppData\Local\Temporary Internet Files" || Exception_Spec == @"\AppData\Local\Tidigare"){
+                    if(Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\INetCache" || Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\History" || Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\Temporary Internet Files" || Exception_Spec == userpath + @"\AppData\Local\Programdata" || Exception_Spec == userpath + @"\AppData\Local\Temporary Internet Files" || Exception_Spec == userpath + @"\AppData\Local\Tidigare" || Exception_Spec == userpath + @"\AppData\Local\Packages" || Exception_Spec == userpath + @"\AppData\Roaming\Microsoft\Windows\Start Menu\Program" || Exception_Spec == userpath + @"\Cookies" || Exception_Spec == userpath + @"\AppData\Local\Temp\WinSAT" || Exception_Spec == userpath + @"\Documents\Min musik" || Exception_Spec == userpath + @"\Documents\Mina bilder" || Exception_Spec == userpath + @"\Documents\Mina videoklipp" || Exception_Spec == userpath + @"\Lokala inställningar" || Exception_Spec == userpath + @"\Mallar" || Exception_Spec == userpath + @"\Mina dokument" || Exception_Spec == userpath + @"\Nätverket" || Exception_Spec == userpath + @"\Programdata" || Exception_Spec == userpath + @"\Recent" || Exception_Spec == userpath + @"\SendTo" || Exception_Spec == userpath + @"\Skrivare" || Exception_Spec == userpath + @"\Start-meny"){
                         continue;
                     }
                     string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
