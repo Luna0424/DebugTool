@@ -421,7 +421,7 @@ namespace myform
                 {
                     string userpath = System.Environment.GetEnvironmentVariable("USERPROFILE");
                     string Exception_Spec = subDir.FullName;
-                    if(Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\INetCache" || Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\History" || Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\Temporary Internet Files"){
+                    if(Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\INetCache" || Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\History" || Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\Temporary Internet Files" || Exception_Spec == userpath + @"\AppData\Local\Programdata" || Exception_Spec == userpath + @"\AppData\Local\Temporary Internet Files" || Exception_Spec == @"\AppData\Local\Tidigare"){
                         continue;
                     }
                     string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
@@ -464,13 +464,13 @@ namespace myform
         {
             // Log the exception, display it, etc
             Console.WriteLine(e.Exception.Message);
-            continue;
+            //continue;
         }
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             // Log the exception, display it, etc
             Console.WriteLine((e.ExceptionObject as Exception).Message);
-            continue;
+            //continue;
         }
     }
 }
