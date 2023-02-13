@@ -10,6 +10,8 @@ namespace myform
 {
     class Program
     {
+        static readonly Stopwatch timer = new Stopwatch();
+
         static void Main(string[] args)
         {
 
@@ -234,6 +236,7 @@ namespace myform
                 Location = new System.Drawing.Point(10, 300)
             };
             RUN.Click += (o ,s) =>{
+                timer.Start();
                 //Reset Log
                 System.Diagnostics.Process.Start("CMD.exe", "/C clear > log.txt");
                 //WinGet
@@ -325,6 +328,8 @@ namespace myform
 
 
                 Console.WriteLine("DONE");
+                Console.WriteLine(timer.Elapsed.ToString());
+                timer.Stop();
             };
 
             Button WinGet = new Button(){
@@ -411,9 +416,7 @@ namespace myform
 
             // Get the files in the source directory and copy to the destination directory
             foreach (FileInfo file in dir.GetFiles())
-            {
-                //if(file.Name == "Content.IE5"){continue;}
-                    
+            {       
                 try{
                     
                     string targetFilePath = Path.Combine(destinationDir, file.Name);
@@ -438,7 +441,7 @@ namespace myform
                 {
                     string userpath = System.Environment.GetEnvironmentVariable("USERPROFILE");
                     string Exception_Spec = subDir.FullName;
-                    if(Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\INetCache" || Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\History" || Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\Temporary Internet Files" || Exception_Spec == userpath + @"\AppData\Local\Programdata" || Exception_Spec == userpath + @"\AppData\Local\Temporary Internet Files" || Exception_Spec == userpath + @"\AppData\Local\Tidigare" || Exception_Spec == userpath + @"\AppData\Local\Packages" || Exception_Spec == userpath + @"\AppData\Roaming\Microsoft\Windows\Start Menu\Program" || Exception_Spec == userpath + @"\Cookies" || Exception_Spec == userpath + @"\AppData\Local\Temp\WinSAT" || Exception_Spec == userpath + @"\Documents\Min musik" || Exception_Spec == userpath + @"\Documents\Mina bilder" || Exception_Spec == userpath + @"\Documents\Mina videoklipp" || Exception_Spec == userpath + @"\Lokala inställningar" || Exception_Spec == userpath + @"\Mallar" || Exception_Spec == userpath + @"\Mina dokument" || Exception_Spec == userpath + @"\Nätverket" || Exception_Spec == userpath + @"\Programdata" || Exception_Spec == userpath + @"\Recent" || Exception_Spec == userpath + @"\SendTo" || Exception_Spec == userpath + @"\Skrivare" || Exception_Spec == userpath + @"\Start-meny"){
+                    if(Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\INetCache" || Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\History" || Exception_Spec == userpath + @"\AppData\Local\Microsoft\Windows\Temporary Internet Files" || Exception_Spec == userpath + @"\AppData\Local\Programdata" || Exception_Spec == userpath + @"\AppData\Local\Temporary Internet Files" || Exception_Spec == userpath + @"\AppData\Local\Tidigare" || Exception_Spec == userpath + @"\AppData\Local\Packages" || Exception_Spec == userpath + @"\AppData\Roaming\Microsoft\Windows\Start Menu\Program" || Exception_Spec == userpath + @"\Cookies" || Exception_Spec == userpath + @"\AppData\Local\Temp\WinSAT" || Exception_Spec == userpath + @"\Documents\Min musik" || Exception_Spec == userpath + @"\Documents\Mina bilder" || Exception_Spec == userpath + @"\Documents\Mina videoklipp" || Exception_Spec == userpath + @"\Lokala inställningar" || Exception_Spec == userpath + @"\Mallar" || Exception_Spec == userpath + @"\Mina dokument" || Exception_Spec == userpath + @"\Nätverket" || Exception_Spec == userpath + @"\Programdata" || Exception_Spec == userpath + @"\Recent" || Exception_Spec == userpath + @"\SendTo" || Exception_Spec == userpath + @"\Skrivare" || Exception_Spec == userpath + @"\Start-meny" || Exception_Spec == userpath + @"\AppData\Local\Application Data" || subDir.FullName.Contains("cache") || subDir.FullName.Contains("Cache") || Exception_Spec == userpath + @"\AppData\Local\History" || Exception_Spec == userpath + @"\Application Data" || Exception_Spec == userpath + @"\Documents\My Music" || Exception_Spec == userpath + @"\Documents\My Pictures" || Exception_Spec == userpath + @"\Documents\My Videos" || Exception_Spec == userpath + @"\Local Settings" || Exception_Spec == userpath + @"\My Documents" || Exception_Spec == userpath + @"\NetHood" || Exception_Spec == userpath + @"\PrintHood" || Exception_Spec == userpath + @"\Start Menu" || Exception_Spec == userpath + @"\Templates" || Exception_Spec == userpath + @"AppData\Local\Temp"){
                         continue;
                     }
                     string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
